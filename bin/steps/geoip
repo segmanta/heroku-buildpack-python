@@ -28,11 +28,15 @@ fi
 
 cd $CACHE_DIR/.geoip
 
-curl -s -L -o geoip.tar.gz $GEOIP_DIST_URL
-tar -zxvf geoip.tar.gz > /dev/null
-cd $GEOIP_DIST_DIR
-./configure --prefix=$BUILD_DIR/.heroku/vendor > /dev/null
-make install > /dev/null
+if [ ! -f "$BUILD_DIR/.heroku/vendor/lib/libGeoIP.so" ]; then
+	curl -s -L -o geoip.tar.gz $GEOIP_DIST_URL
+	tar -zxvf geoip.tar.gz > /dev/null
+	cd $GEOIP_DIST_DIR
+	./configure --prefix=$BUILD_DIR/.heroku/vendor > /dev/null
+	make install > /dev/null
+fi
+echo "       GeoIP libs available at: $BUILD_DIR/.heroku/vendor"
+
 
 cd $BUILD_DIR
 if [ ! -f $GEOLITECITY_FILE ]; then
