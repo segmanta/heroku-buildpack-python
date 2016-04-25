@@ -46,8 +46,7 @@ if [ ! "$SKIP_INSTALL" ]; then
   hash -r
 fi
 
-# If Pip isn't up to date:
-if [ "$FRESH_PYTHON" ] || [[ ! $(pip --version) == *$PIP_VERSION* ]]; then
+if [ "$FRESH_PYTHON" ]; then
   WORKING_DIR=$(pwd)
 
   bpwatch start prepare_environment
@@ -73,6 +72,13 @@ if [ "$FRESH_PYTHON" ] || [[ ! $(pip --version) == *$PIP_VERSION* ]]; then
 
   bpwatch stop install_pip
   bpwatch stop prepare_environment
+fi
+
+# If Pip isn't up to date:
+if [[ ! $(pip --version) == *$SEGMANTA_PIP_VERSION* ]]; then
+  bpwatch start segmanta_upgrade_pip
+  pip install pip==$(cat $SEGMANTA_PIP_VERSION)
+  bpwatch stop segmanta_upgrade_pip
 fi
 
 set -e
