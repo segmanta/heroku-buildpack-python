@@ -12,11 +12,14 @@
 GEOIP_DIST_URL="https://github.com/maxmind/geoip-api-c/releases/download/v1.6.9/GeoIP-1.6.9.tar.gz"
 GEOIP_DIST_DIR="GeoIP-1.6.9"
 
-GEOLITECITY_URL="http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz"
-GEOLITECITY_FILE="GeoLiteCity.dat"
+GEOLITECITY_URL="http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.tar.gz"
+GEOLITECITY_ARCHIVE="GeoLite2-City.tar.gz"
+GEOLITECITY_FILE="GeoLite2-City.mmdb"
 
-GEOIP_URL="http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz"
-GEOIP_FILE="GeoIP.dat"
+
+GEOIP_URL="http://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.tar.gz"
+GEOIP_ARCHIVE="GeoLite2-Country.tar.gz"
+GEOIP_FILE="GeoLite2-Country.mmdb"
 
 # Syntax sugar.
 source $BIN_DIR/utils
@@ -40,14 +43,20 @@ echo "       GeoIP libs available at: $BUILD_DIR/.heroku/vendor"
 
 cd $BUILD_DIR
 if [ ! -f $GEOLITECITY_FILE ]; then
-    curl -s -L -o ${GEOLITECITY_FILE}.gz $GEOLITECITY_URL
-    gunzip ${GEOLITECITY_FILE}.gz > /dev/null
+    curl -s -L -o $GEOLITECITY_ARCHIVE $GEOLITECITY_URL
+    tar -xf $GEOLITECITY_ARCHIVE --wildcards --no-anchored  --strip-components 1 '*.mmdb'
+    if [ ! -f $GEOLITECITY_FILE ]; then
+        echo "ERROR! ${GEOLITECITY_FILE} missing!"
+    fi
 fi
 echo "       GeoIP City Database is available at: $(pwd)/${GEOLITECITY_FILE}"
 
 cd $BUILD_DIR
 if [ ! -f $GEOIP_FILE ]; then
-    curl -s -L -o ${GEOIP_FILE}.gz $GEOIP_URL
-    gunzip ${GEOIP_FILE}.gz > /dev/null
+    curl -s -L -o $GEOIP_ARCHIVE $GEOIP_URL
+    tar -xf $GEOIP_ARCHIVE --wildcards --no-anchored  --strip-components 1 '*.mmdb'
+    if [ ! -f $GEOIP_FILE ]; then
+        echo "ERROR! ${GEOIP_FILE} missing!"
+    fi
 fi
-echo "       GeoIP Database is available at: $(pwd)/${GEOIP_FILE}"
+echo "       GeoIP Country Database is available at: $(pwd)/${GEOLITECITY_FILE}"
