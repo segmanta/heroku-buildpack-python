@@ -181,6 +181,9 @@ fi
 # Libffi support.
 source $BIN_DIR/steps/cryptography
 
+# Numpy/scipy support
+source $BIN_DIR/steps/numpy-scipy
+
 # Install dependencies with Pip.
 source $BIN_DIR/steps/pip-install
 
